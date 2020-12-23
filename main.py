@@ -1,13 +1,14 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
-from PyQt5 import uic
+from addEditCoffeeForm import Ui_CoffeeForm
+from mainUI import Ui_MainWindow
 import sqlite3
 import sys
 
 
-class addEditCoffeeForm(QMainWindow):
+class addEditCoffeeForm(QMainWindow, Ui_CoffeeForm):
     def __init__(self, parent=None):
         super(addEditCoffeeForm, self).__init__(parent)
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.setupUi(self)
 
         self.combo_grind.addItems(["молотый", "в зернах"])
         self.combo_degree_of_roast.addItems(["high", "medium", "low"])
@@ -41,12 +42,16 @@ class addEditCoffeeForm(QMainWindow):
         self.spin_volume.setValue(float(volume))
         self.mode = 0
 
+    def closeEvent(self, event):
+        self.close()
+        self.__init__(self.parent())
 
-class CoffeeBase(QMainWindow):
+
+class CoffeeBase(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)
-        self.con = sqlite3.connect("coffee.db")
+        self.setupUi(self)
+        self.con = sqlite3.connect("Data/coffee.db")
         self.loadTable()
         self.add_edit_form = addEditCoffeeForm(self)
         self.currentID = 1
